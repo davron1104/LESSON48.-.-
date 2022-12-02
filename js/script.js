@@ -1,5 +1,5 @@
 'use strict';
- /* Задания на урок:из урока 44
+/* Задания на урок:из урока 44
 
 1) Удалить все рекламные блоки со страницы (правая часть сайта)
 
@@ -36,38 +36,76 @@ P.S. Здесь есть несколько вариантов решения з
 
 // Возьмите свой код из предыдущей практики
 
- const movieDB = {
-     movies: [
-         "Логан",
-         "Лига справедливости",
-         "Ла-ла лэнд",
-         "Одержимость",
-         "Скотт Пилигрим против..."
-     ]
- };
+document.addEventListener('DOMContentLoaded', function () {
+    const movieDB = {
+        movies: [
+            "Логан",
+            "Лига справедливости",
+            "Ла-ла лэнд",
+            "Одержимость",
+            "Скотт Пилигрим против..."
+        ]
+    };
 
- const advertising = document.querySelector('.promo__adv'),
-     genre = document.querySelector('.promo__genre'),
-     bg = document.querySelector('.promo__bg'),
-     content = document.querySelector(".promo__content"),
-     movieList = document.querySelector(".promo__interactive-list");
+    const advertising = document.querySelector('.promo__adv'),
+        genre = document.querySelector('.promo__genre'),
+        bg = document.querySelector('.promo__bg'),
+        content = document.querySelector(".promo__content"),
+        movieList = document.querySelector(".promo__interactive-list"),
+        addForm = document.querySelector('form.add'),
+        addInput = addForm.querySelector('.adding__input'),
+        addCheckbox = addForm.querySelector('[type="checkbox"]');
+
+    addForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let newFilm = addInput.value;
+        const favourite = addCheckbox.checked;
+
+        
+
+        if (newFilm) {
+            if(newFilm.length > 21) {
+                newFilm = `${newFilm.substring(0, 22)}...`;
+            }
+            movieDB.movies.push(newFilm);
+            sortArr(movieDB.movies);
+            createMovieList(movieDB.movies, movieList);
+        }
+        e.target.reset();
+    });
 
 
- advertising.remove();
- genre.textContent = "драма";
- //   bg.style.cssText = "background: url('../img/bg.jpg') center center / cover no-repeat; background-position: top;";
- bg.style.backgroundImage = "('/img/bg.jpg') center center / cover no-repeat";
+    const deleteAdv = (arr) => {
+        arr.forEach(item => {
+            item.remove();
+        });
+    };
 
- movieList.innerHTML = "";
+    const makeChanges = () => {
+        genre.textContent = "драма";
+        bg.style.backgroundImage = "('/img/bg.jpg') center center / cover no-repeat";
+    };
 
- movieDB.movies.sort();
+    const sortArr = (arr) => {
+        arr.sort();
+    };
 
- movieDB.movies.forEach(function (film, i) {
-     movieList.innerHTML += `
-    <li class="promo__interactive-item">${i + 1}. ${film}
-        <div class="delete"></div>
-    </li>
-    `;
- });
 
- 
+    function createMovieList(films, parent) {
+        parent.innerHTML = "";
+
+        films.forEach(function (film, i) {
+            parent.innerHTML += `
+           <li class="promo__interactive-item">${i + 1}. ${film}
+               <div class="delete"></div>
+           </li>
+           `;
+        });
+    }
+
+    deleteAdv(advertising);
+    makeChanges();
+    sortArr(movieDB.movies);
+    createMovieList(movieDB.movies, movieList);
+});
